@@ -1,12 +1,65 @@
-<div class="container mx-auto mt-8">
-    <h2 class="text-2xl font-semibold mb-2">{{ doctor.name }}</h2>
-    <p><strong>Email:</strong> {{ doctor.email }}</p>
-    <p><strong>Username:</strong> {{ doctor.username }}</p>
+<div class="container mx-auto mt-24 px-4">
+  <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+    <div class="px-4 py-5 sm:px-6">
+      <h3 class="text-lg leading-6 font-medium text-gray-900">
+        Doctor Details
+      </h3>
+      <p class="mt-1 max-w-2xl text-sm text-gray-500">
+        Personal and professional information.
+      </p>
+    </div>
+    <div class="border-t border-gray-200 px-4 py-5 sm:p-0">
+      <dl class="sm:divide-y sm:divide-gray-200">
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            {{ doctor.name }}
+          </dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Username</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            {{ doctor.username }}
+          </dd>
+        </div>
+        <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+          <dt class="text-sm font-medium text-gray-500">Email</dt>
+          <dd class="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+            {{ doctor.email }}
+          </dd>
+        </div>
+        <!-- Add more details as needed -->
+      </dl>
+    </div>
+  </div>
 
-    <h3 class="text-xl font-semibold mt-6 mb-2">Tasks</h3>
-    <ul>
-        <li *ngFor="let task of tasks">
-            <span [class.line-through]="task.completed">{{ task.title }}</span>
+  <!-- Tasks Section -->
+  <div class="mt-8">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">
+      Assigned Tasks
+    </h3>
+    <div class="mt-4">
+      <ul class="divide-y divide-gray-200">
+        <li
+          *ngFor="let task of tasks"
+          class="py-4 flex items-center justify-between"
+        >
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              [checked]="task.completed"
+              class="h-4 w-4 text-primary focus:ring-primary-light border-gray-300 rounded"
+            />
+            <span
+              [class.line-through]="task.completed"
+              class="ml-3 text-sm text-gray-700"
+            >
+              {{ task.title }}
+            </span>
+          </div>
+          <!-- Add actions if needed -->
         </li>
-    </ul>
+      </ul>
+    </div>
+  </div>
 </div>

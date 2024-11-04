@@ -4,5 +4,17 @@
 @tailwind utilities;
 
 body {
-    font-family: 'Helvetica Neue', Arial, sans-serif;
+  @apply bg-gray-100 font-sans text-gray-900;
+}
+
+.loader {
+  border-top-color: #3490dc;
+  /* Primary color */
+  animation: spinner 1.5s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
   }
+}

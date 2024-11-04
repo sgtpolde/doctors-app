@@ -1,0 +1,93 @@
+<div class="container mx-auto mt-24 px-4 max-w-xl">
+  <h2 class="text-2xl font-bold text-gray-800 mb-6">
+    {{ isEditMode ? "Edit Doctor" : "Add Doctor" }}
+  </h2>
+  <form (ngSubmit)="onSubmit()" #doctorForm="ngForm" novalidate>
+    <div class="grid grid-cols-1 gap-6">
+      <!-- Name Field -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-700">
+          Full Name
+        </label>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          [(ngModel)]="doctor.name"
+          required
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-light focus:border-primary-light sm:text-sm"
+        />
+        <div
+          *ngIf="doctorForm.submitted && !doctor.name"
+          class="text-red-600 text-sm mt-1"
+        >
+          Name is required.
+        </div>
+      </div>
+      <!-- Username Field -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">
+          Username
+        </label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          [(ngModel)]="doctor.username"
+          required
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-light focus:border-primary-light sm:text-sm"
+        />
+        <div
+          *ngIf="doctorForm.submitted && !doctor.username"
+          class="text-red-600 text-sm mt-1"
+        >
+          Username is required.
+        </div>
+      </div>
+      <!-- Email Field -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">
+          Email
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="doctor.email"
+          required
+          email
+          class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary-light focus:border-primary-light sm:text-sm"
+        />
+        <div
+          *ngIf="doctorForm.submitted && !doctor.email"
+          class="text-red-600 text-sm mt-1"
+        >
+          Email is required.
+        </div>
+        <div
+          *ngIf="
+            doctorForm.submitted &&
+            doctor.email &&
+            !doctorForm.controls['email'].valid
+          "
+          class="text-red-600 text-sm mt-1"
+        >
+          Please enter a valid email.
+        </div>
+      </div>
+      <!-- Submit Button -->
+      <div>
+        <button
+          type="submit"
+          class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+        >
+          {{ isEditMode ? "Update Doctor" : "Add Doctor" }}
+        </button>
+      </div>
+      <!-- Error Message -->
+      <div *ngIf="errorMessage" class="text-red-600 text-center mt-4">
+        {{ errorMessage }}
+      </div>
+    </div>
+  </form>
+</div>

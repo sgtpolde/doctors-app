@@ -1,14 +1,122 @@
-<div class="container mx-auto mt-8">
-    <h2 class="text-2xl font-semibold mb-4">Doctors</h2>
-    <ul>
-      <li *ngFor="let doctor of doctors" class="mb-2">
-        <a
-          [routerLink]="['/doctors', doctor.id]"
-          class="text-blue-600 hover:underline"
+<div class="container mx-auto mt-24 px-4">
+  <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+    <h2 class="text-3xl font-bold text-gray-800">Doctors</h2>
+    <div class="mt-4 md:mt-0">
+      <a
+        routerLink="/doctors/add"
+        class="inline-flex items-center px-4 py-2 bg-secondary hover:bg-secondary-dark text-white text-sm font-medium rounded-md shadow-sm"
+      >
+        <svg
+          class="-ml-1 mr-2 h-5 w-5"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          {{ doctor.name }}
-        </a>
-      </li>
-    </ul>
+          <!-- Plus icon -->
+        </svg>
+        Add Doctor
+      </a>
+    </div>
   </div>
-  
+
+  <div class="mb-4">
+    <div class="relative">
+      <input
+        type="text"
+        placeholder="Search by name"
+        [(ngModel)]="filterText"
+        (input)="filterDoctors()"
+        class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light"
+      />
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg
+          class="h-5 w-5 text-gray-400"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <!-- Search icon -->
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Spinner -->
+  <div *ngIf="isLoading" class="flex justify-center mt-8">
+    <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+  </div>
+
+  <div *ngIf="!isLoading">
+    <table
+      *ngIf="filteredDoctors.length"
+      class="min-w-full bg-white shadow rounded-lg overflow-hidden"
+    >
+      <thead>
+        <tr>
+          <th
+            class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+            (click)="sortDoctors('name')"
+          >
+            Name
+            <span *ngIf="sortField === 'name'">
+              {{ sortAscending ? '▲' : '▼' }}
+            </span>
+          </th>
+          <th
+            class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+            (click)="sortDoctors('email')"
+          >
+            Email
+            <span *ngIf="sortField === 'email'">
+              {{ sortAscending ? '▲' : '▼' }}
+            </span>
+          </th>
+          <th class="px-6 py-3 bg-gray-50"></th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <tr
+          *ngFor="let doctor of filteredDoctors"
+          class="hover:bg-gray-50 transition-colors"
+        >
+          <td class="px-6 py-4 whitespace-nowrap">
+            <a
+              [routerLink]="['/doctors', doctor.id]"
+              class="text-primary-dark hover:underline font-medium"
+            >
+              {{ doctor.name }}
+            </a>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">{{ doctor.email }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <a
+              [routerLink]="['/doctors/edit', doctor.id]"
+              class="text-blue-600 hover:text-blue-900 mr-4"
+            >
+              Edit
+            </a>
+            <button
+              (click)="deleteDoctor(doctor.id)"
+              class="text-red-600 hover:text-red-900"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div
+      *ngIf="!filteredDoctors.length && !errorMessage"
+      class="text-center text-gray-500 mt-8"
+    >
+      No doctors found.
+    </div>
+
+    <div *ngIf="errorMessage" class="text-red-600 text-center mt-8">
+      {{ errorMessage }}
+    </div>
+  </div>
+</div>

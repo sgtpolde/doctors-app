@@ -1,0 +1,36 @@
+<div
+  *ngFor="let notification of notifications"
+  class="fixed bottom-4 right-4 max-w-sm w-full z-50"
+>
+  <div
+    class="bg-white border-l-4 p-4 mb-4 shadow-lg rounded-md"
+    [ngClass]="{
+      'border-red-500': notification.type === 'error',
+      'border-green-500': notification.type === 'success',
+      'border-yellow-500': notification.type === 'warning',
+      'border-blue-500': notification.type === 'info'
+    }"
+  >
+    <div class="flex items-start">
+      <div class="flex-shrink-0">
+        <!-- Icons based on notification type -->
+        <!-- ... -->
+      </div>
+      <div class="ml-3 w-0 flex-1">
+        <p class="text-sm font-medium text-gray-900">
+          {{ notification.message }}
+        </p>
+      </div>
+      <div class="ml-4 flex-shrink-0 flex">
+        <button
+          (click)="closeNotification(notification.id)"
+          class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none"
+        >
+          <span class="sr-only">Close</span>
+          <!-- Close Icon -->
+          <!-- ... -->
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
