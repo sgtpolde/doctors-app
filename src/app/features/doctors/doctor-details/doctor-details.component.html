@@ -1,0 +1,12 @@
+<div class="container mx-auto mt-8">
+    <h2 class="text-2xl font-semibold mb-2">{{ doctor.name }}</h2>
+    <p><strong>Email:</strong> {{ doctor.email }}</p>
+    <p><strong>Username:</strong> {{ doctor.username }}</p>
+
+    <h3 class="text-xl font-semibold mt-6 mb-2">Tasks</h3>
+    <ul>
+        <li *ngFor="let task of tasks">
+            <span [class.line-through]="task.completed">{{ task.title }}</span>
+        </li>
+    </ul>
+</div>
