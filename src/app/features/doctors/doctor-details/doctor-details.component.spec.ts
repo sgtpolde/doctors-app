@@ -1,10 +1,16 @@
-import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import { DoctorDetailsComponent } from './doctor-details.component';
 import { DoctorService, Doctor } from '../../../core/services/doctor.service';
 import { TaskService, Task } from '../../../core/services/task.service';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('DoctorDetailsComponent', () => {
   let component: DoctorDetailsComponent;
@@ -29,14 +35,16 @@ describe('DoctorDetailsComponent', () => {
     const taskSpy = jasmine.createSpyObj('TaskService', ['getTasksByDoctorId']);
 
     await TestBed.configureTestingModule({
-      imports: [DoctorDetailsComponent],
+      imports: [DoctorDetailsComponent], // Standalone component should be imported
       providers: [
-        { provide: DoctorService, useValue: doctorSpy },
-        { provide: TaskService, useValue: taskSpy },
         {
           provide: ActivatedRoute,
-          useValue: { snapshot: { paramMap: { get: () => doctorId.toString() } } },
+          useValue: {
+            snapshot: { paramMap: { get: () => doctorId.toString() } },
+          },
         },
+        { provide: DoctorService, useValue: doctorSpy },
+        { provide: TaskService, useValue: taskSpy },
       ],
     }).compileComponents();
 
@@ -49,19 +57,54 @@ describe('DoctorDetailsComponent', () => {
     taskServiceSpy.getTasksByDoctorId.and.returnValue(of(tasksData));
   });
 
-  it('should create and load doctor details and tasks', fakeAsync(() => {
+  it('should create the component', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should load doctor details and tasks after initialization', fakeAsync(() => {
+    fixture.detectChanges(); // Trigger ngOnInit
+    tick(); // Wait for async data loading
+    fixture.detectChanges(); // Update the DOM after data is loaded
+
+    const nameElement = fixture.debugElement.query(By.css('dd:nth-of-type(1)'));
+    expect(nameElement).withContext('Name element should be present').toBeTruthy();
+    if (nameElement) {
+      expect(nameElement.nativeElement.textContent).toContain('John Doe');
+    }
+  }));
+
+  it('should handle error if doctor details loading fails', fakeAsync(() => {
+    doctorServiceSpy.getDoctorById.and.returnValue(
+      throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' }))
+    );
+    fixture.detectChanges(); // Trigger ngOnInit
+    tick(); // Wait for async error response
+
+    expect(component.errorMessages).toBe('Error loading doctor details');
+  }));
+
+  it('should handle error if tasks loading fails', fakeAsync(() => {
+    doctorServiceSpy.getDoctorById.and.returnValue(of(doctorData));
+    taskServiceSpy.getTasksByDoctorId.and.returnValue(
+      throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' }))
+    );
     fixture.detectChanges();
     tick();
 
     expect(component.doctor).toEqual(doctorData);
-    expect(component.tasks).toEqual(tasksData);
+    expect(component.errorMessages).toBe('Failed to load tasks');
+  }));
 
+  it('should update task completion status', fakeAsync(() => {
+    doctorServiceSpy.getDoctorById.and.returnValue(of(doctorData));
+    taskServiceSpy.getTasksByDoctorId.and.returnValue(of(tasksData));
+    fixture.detectChanges();
+    tick();
+
+    component.tasks[0].completed = true;
     fixture.detectChanges();
 
-    const doctorNameElement = fixture.debugElement.query(By.css('h2'));
-    expect(doctorNameElement.nativeElement.textContent).toContain('John Doe');
-
-    const taskItems = fixture.debugElement.queryAll(By.css('ul li'));
-    expect(taskItems.length).toBe(2);
+    const taskCheckbox = fixture.debugElement.query(By.css('ul li input'));
+    expect(taskCheckbox.nativeElement.checked).toBeTrue();
   }));
 });

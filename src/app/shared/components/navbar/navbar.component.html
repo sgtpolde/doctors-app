@@ -1,118 +1,71 @@
 <nav class="bg-white shadow-md fixed w-full z-50">
   <div class="container mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
-      <!-- Logo and Navigation Links -->
-      <div class="flex items-center">
-        <a href="/" class="flex-shrink-0 text-primary-dark text-xl font-bold">
-          DoctorsApp
-        </a>
-        <div class="hidden md:block">
-          <div class="ml-10 flex items-baseline space-x-4">
-            <a
-              routerLink="/"
-              routerLinkActive="text-primary-dark"
-              class="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium"
-              [routerLinkActiveOptions]="{ exact: true }"
-            >
-              Home
-            </a>
-            <a
-              routerLink="/doctors"
-              routerLinkActive="text-primary-dark"
-              class="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Doctors
-            </a>
-            <a
-              routerLink="/tasks"
-              routerLinkActive="text-primary-dark"
-              class="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium"
-            >
-              Tasks
-            </a>
-            <!-- Add more navigation links as needed -->
-          </div>
-        </div>
-      </div>
-      <!-- Mobile Menu Button -->
-      <div class="-mr-2 flex md:hidden">
-        <button
-          (click)="isMenuOpen = !isMenuOpen"
-          class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-dark focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-dark"
+      <a routerLink="/" class="text-primary-dark text-xl font-bold">
+        DoctorsApp
+      </a>
+      
+      <!-- Desktop Links -->
+      <div class="hidden md:flex space-x-4 ml-10">
+        <a
+          routerLink="/"
+          routerLinkActive="text-primary-dark"
+          class="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium"
+          [routerLinkActiveOptions]="{ exact: true }"
         >
-          <span class="sr-only">Open main menu</span>
-          <!-- Icon when menu is closed -->
-          <svg
-            *ngIf="!isMenuOpen"
-            class="block h-6 w-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <!-- Menu icon -->
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-          <!-- Icon when menu is open -->
-          <svg
-            *ngIf="isMenuOpen"
-            class="block h-6 w-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <!-- Close icon -->
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
+          Home
+        </a>
+        <a
+          routerLink="/doctors"
+          routerLinkActive="text-primary-dark"
+          class="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Doctors
+        </a>
+        <a
+          routerLink="/tasks"
+          routerLinkActive="text-primary-dark"
+          class="text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-sm font-medium"
+        >
+          Tasks
+        </a>
       </div>
+      
+      <!-- Mobile Menu Button -->
+      <button
+        (click)="toggleMenu()"
+        class="md:hidden p-2 rounded-md text-gray-700 hover:text-primary-dark"
+      >
+        <span *ngIf="!isMenuOpen">☰</span>
+        <span *ngIf="isMenuOpen">✕</span>
+      </button>
     </div>
   </div>
 
   <!-- Mobile Menu -->
-  <div
-    class="md:hidden"
-    [ngClass]="{ hidden: !isMenuOpen }"
-    id="mobile-menu"
-  >
-    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+  <div *ngIf="isMenuOpen" class="md:hidden bg-white shadow-lg">
+    <div class="space-y-1 px-4 py-2">
       <a
         routerLink="/"
-        routerLinkActive="text-primary-dark"
-        class="block text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-base font-medium"
-        [routerLinkActiveOptions]="{ exact: true }"
-        (click)="isMenuOpen = false"
+        class="block text-gray-700 hover:text-primary-dark text-base font-medium"
+        (click)="toggleMenu()"
       >
         Home
       </a>
       <a
         routerLink="/doctors"
-        routerLinkActive="text-primary-dark"
-        class="block text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-base font-medium"
-        (click)="isMenuOpen = false"
+        class="block text-gray-700 hover:text-primary-dark text-base font-medium"
+        (click)="toggleMenu()"
       >
         Doctors
       </a>
       <a
         routerLink="/tasks"
-        routerLinkActive="text-primary-dark"
-        class="block text-gray-700 hover:text-primary-dark px-3 py-2 rounded-md text-base font-medium"
-        (click)="isMenuOpen = false"
+        class="block text-gray-700 hover:text-primary-dark text-base font-medium"
+        (click)="toggleMenu()"
       >
         Tasks
       </a>
-      <!-- Add more navigation links as needed -->
     </div>
   </div>
 </nav>

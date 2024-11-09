@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { Doctor, DoctorService } from '../../../core/services/doctor.service';
 import { Task, TaskService } from '../../../core/services/task.service';
-
-
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-doctor-details',
@@ -14,8 +14,9 @@ import { Task, TaskService } from '../../../core/services/task.service';
   imports: [CommonModule, RouterModule],
 })
 export class DoctorDetailsComponent implements OnInit {
-  doctor!: Doctor;
+  doctor: Doctor = { id: 0, name: '', username: '', email: '' };;
   tasks: Task[] = [];
+  errorMessages: string = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -25,11 +26,27 @@ export class DoctorDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.doctorService.getDoctorById(id).subscribe((data) => {
-      this.doctor = data;
-    });
-    this.taskService.getTasksByDoctorId(id).subscribe((data) => {
-      this.tasks = data;
-    });
+
+    this.doctorService.getDoctorById(id)
+      .pipe(
+        catchError((error) => {
+          this.errorMessages = 'Error loading doctor details';
+          return of(null); // Return a null value or empty observable to prevent further errors
+        })
+      )
+      .subscribe((data) => {
+        if (data) this.doctor = data;
+      });
+
+    this.taskService.getTasksByDoctorId(id)
+      .pipe(
+        catchError((error) => {
+          this.errorMessages = 'Failed to load tasks';
+          return of([]); // Return an empty array if tasks cannot be loaded
+        })
+      )
+      .subscribe((data) => {
+        if (data) this.tasks = data;
+      });
   }
 }

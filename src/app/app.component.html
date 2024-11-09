@@ -1,5 +1,16 @@
-<app-navbar></app-navbar>
-<main class="pt-5">
-  <router-outlet></router-outlet>
-</main>
-<app-notification></app-notification>
+<div class="grid grid-rows-[auto_1fr_auto] min-h-screen overflow-hidden">
+  <!-- Navbar positioned at the top and fixed for consistent layout -->
+  <header class="fixed top-0 left-0 w-full z-50">
+    <app-navbar></app-navbar>
+  </header>
+
+  <!-- Main content area with padding to prevent overlap with fixed navbar -->
+  <main class="pt-16 md:pt-20 px-4 sm:px-6 lg:px-8 overflow-y-auto">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Notification component positioned at the bottom -->
+  <aside class="fixed bottom-0 left-0 w-full">
+    <app-notification></app-notification>
+  </aside>
+</div>
