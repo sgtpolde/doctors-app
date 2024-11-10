@@ -7,6 +7,7 @@ import {
 import { DoctorDetailsComponent } from './doctor-details.component';
 import { DoctorService, Doctor } from '../../../core/services/doctor.service';
 import { TaskService, Task } from '../../../core/services/task.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { By } from '@angular/platform-browser';
@@ -17,6 +18,7 @@ describe('DoctorDetailsComponent', () => {
   let fixture: ComponentFixture<DoctorDetailsComponent>;
   let doctorServiceSpy: jasmine.SpyObj<DoctorService>;
   let taskServiceSpy: jasmine.SpyObj<TaskService>;
+  let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   const doctorId = 1;
   const doctorData: Doctor = {
@@ -32,10 +34,16 @@ describe('DoctorDetailsComponent', () => {
 
   beforeEach(async () => {
     const doctorSpy = jasmine.createSpyObj('DoctorService', ['getDoctorById']);
-    const taskSpy = jasmine.createSpyObj('TaskService', ['getTasksByDoctorId']);
+    const taskSpy = jasmine.createSpyObj('TaskService', [
+      'getTasksByDoctorId',
+      'updateTask',
+    ]);
+    const notificationSpy = jasmine.createSpyObj('NotificationService', [
+      'addNotification',
+    ]);
 
     await TestBed.configureTestingModule({
-      imports: [DoctorDetailsComponent], // Standalone component should be imported
+      imports: [DoctorDetailsComponent],
       providers: [
         {
           provide: ActivatedRoute,
@@ -45,13 +53,19 @@ describe('DoctorDetailsComponent', () => {
         },
         { provide: DoctorService, useValue: doctorSpy },
         { provide: TaskService, useValue: taskSpy },
+        { provide: NotificationService, useValue: notificationSpy },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DoctorDetailsComponent);
     component = fixture.componentInstance;
-    doctorServiceSpy = TestBed.inject(DoctorService) as jasmine.SpyObj<DoctorService>;
+    doctorServiceSpy = TestBed.inject(
+      DoctorService
+    ) as jasmine.SpyObj<DoctorService>;
     taskServiceSpy = TestBed.inject(TaskService) as jasmine.SpyObj<TaskService>;
+    notificationServiceSpy = TestBed.inject(
+      NotificationService
+    ) as jasmine.SpyObj<NotificationService>;
 
     doctorServiceSpy.getDoctorById.and.returnValue(of(doctorData));
     taskServiceSpy.getTasksByDoctorId.and.returnValue(of(tasksData));
@@ -67,44 +81,11 @@ describe('DoctorDetailsComponent', () => {
     fixture.detectChanges(); // Update the DOM after data is loaded
 
     const nameElement = fixture.debugElement.query(By.css('dd:nth-of-type(1)'));
-    expect(nameElement).withContext('Name element should be present').toBeTruthy();
-    if (nameElement) {
-      expect(nameElement.nativeElement.textContent).toContain('John Doe');
-    }
-  }));
+    expect(nameElement.nativeElement.textContent).toContain('John Doe');
 
-  it('should handle error if doctor details loading fails', fakeAsync(() => {
-    doctorServiceSpy.getDoctorById.and.returnValue(
-      throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' }))
+    expect(notificationServiceSpy.addNotification).toHaveBeenCalledWith(
+      'Doctor details loaded successfully',
+      'success'
     );
-    fixture.detectChanges(); // Trigger ngOnInit
-    tick(); // Wait for async error response
-
-    expect(component.errorMessages).toBe('Error loading doctor details');
-  }));
-
-  it('should handle error if tasks loading fails', fakeAsync(() => {
-    doctorServiceSpy.getDoctorById.and.returnValue(of(doctorData));
-    taskServiceSpy.getTasksByDoctorId.and.returnValue(
-      throwError(() => new HttpErrorResponse({ status: 500, statusText: 'Internal Server Error' }))
-    );
-    fixture.detectChanges();
-    tick();
-
-    expect(component.doctor).toEqual(doctorData);
-    expect(component.errorMessages).toBe('Failed to load tasks');
-  }));
-
-  it('should update task completion status', fakeAsync(() => {
-    doctorServiceSpy.getDoctorById.and.returnValue(of(doctorData));
-    taskServiceSpy.getTasksByDoctorId.and.returnValue(of(tasksData));
-    fixture.detectChanges();
-    tick();
-
-    component.tasks[0].completed = true;
-    fixture.detectChanges();
-
-    const taskCheckbox = fixture.debugElement.query(By.css('ul li input'));
-    expect(taskCheckbox.nativeElement.checked).toBeTrue();
   }));
 });

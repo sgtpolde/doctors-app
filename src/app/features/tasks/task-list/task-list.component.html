@@ -30,21 +30,21 @@
     <button
       (click)="setFilter('all')"
       [class.font-bold]="filter === 'all'"
-      class="text-gray-800 hover:text-gray-600"
+      class="text-gray-800 hover:text-gray-600 px-3 py-1 border rounded"
     >
       All
     </button>
     <button
       (click)="setFilter('completed')"
       [class.font-bold]="filter === 'completed'"
-      class="text-gray-800 hover:text-gray-600"
+      class="text-gray-800 hover:text-gray-600 px-3 py-1 border rounded"
     >
       Completed
     </button>
     <button
       (click)="setFilter('incomplete')"
       [class.font-bold]="filter === 'incomplete'"
-      class="text-gray-800 hover:text-gray-600"
+      class="text-gray-800 hover:text-gray-600 px-3 py-1 border rounded"
     >
       Incomplete
     </button>
@@ -61,7 +61,7 @@
     <div class="bg-white shadow rounded-lg overflow-hidden">
       <ul class="divide-y divide-gray-200">
         <li
-          *ngFor="let task of filteredTasks"
+          *ngFor="let task of displayedTasks"
           class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
         >
           <div class="flex items-center">
@@ -74,15 +74,17 @@
             <span
               [class.line-through]="task.completed"
               class="ml-3 text-sm text-gray-700"
-              >{{ task.title }}</span
             >
+              {{ task.title }}
+            </span>
           </div>
           <div class="flex space-x-4">
             <a
               [routerLink]="['/tasks/edit', task.id]"
               class="text-blue-600 hover:text-blue-900"
-              >Edit</a
             >
+              Edit
+            </a>
             <button
               (click)="deleteTask(task.id)"
               class="text-red-600 hover:text-red-900"
@@ -92,6 +94,31 @@
           </div>
         </li>
       </ul>
+    </div>
+
+    <!-- Pagination Controls -->
+    <div class="flex justify-between items-center mt-6">
+      <button
+        (click)="previousPage()"
+        [disabled]="currentPage === 1"
+        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+        aria-label="Previous Page"
+      >
+        Previous
+      </button>
+
+      <div class="text-gray-600">
+        Page {{ currentPage }} of {{ totalPages }}
+      </div>
+
+      <button
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages"
+        class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+        aria-label="Next Page"
+      >
+        Next
+      </button>
     </div>
 
     <!-- Empty State -->

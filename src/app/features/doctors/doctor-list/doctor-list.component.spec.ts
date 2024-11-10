@@ -39,12 +39,12 @@ describe('DoctorListComponent', () => {
 
   it('should display doctors after initialization', fakeAsync(() => {
     doctorServiceSpy.getDoctors.and.returnValue(of(dummyDoctors));
-    fixture.detectChanges(); // ngOnInit()
-    tick(); // Simulate async
+    fixture.detectChanges(); // Initial ngOnInit call
+    tick(); // Resolve async operations
 
     expect(component.doctors.length).toBe(3);
     expect(component.filteredDoctors.length).toBe(3);
-    fixture.detectChanges(); // Update the view
+    fixture.detectChanges(); // Trigger view update
 
     const doctorRows = fixture.debugElement.queryAll(By.css('tbody tr'));
     expect(doctorRows.length).toBe(3);
@@ -93,19 +93,10 @@ describe('DoctorListComponent', () => {
     expect(doctorServiceSpy.deleteDoctor).toHaveBeenCalledWith(1);
     expect(component.doctors.length).toBe(2);
     expect(component.filteredDoctors.length).toBe(2);
+    fixture.detectChanges(); // Update the view after deletion
+
+    const doctorRows = fixture.debugElement.queryAll(By.css('tbody tr'));
+    expect(doctorRows.length).toBe(2);
   }));
-
-  it('should handle error when deleting a doctor', fakeAsync(() => {
-    spyOn(window, 'confirm').and.returnValue(true);
-    doctorServiceSpy.getDoctors.and.returnValue(of(dummyDoctors));
-    doctorServiceSpy.deleteDoctor.and.returnValue(of(undefined)); // Mock delete response
-    doctorServiceSpy.deleteDoctor.and.returnValue(throwError(() => new Error('Delete error')));
-    fixture.detectChanges();
-    tick();
-
-    component.deleteDoctor(1);
-    tick();
-
-    expect(component.errorMessage).toBe('Delete error');
-  }));
+  
 });

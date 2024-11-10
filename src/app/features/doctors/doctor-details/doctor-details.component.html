@@ -1,4 +1,4 @@
-<div class="container mx-auto mt-10 px-4 sm:px-6 lg:px-8">
+<div class="container mx-auto mt mt-24 px-4 sm:px-6 lg:px-8">
   <!-- Doctor Details Section -->
   <div class="bg-white shadow-md rounded-lg overflow-hidden">
     <div class="px-4 py-5 sm:px-6">
@@ -28,7 +28,7 @@
   </div>
 
   <!-- Pending Tasks Section -->
-  <div class="mt-10">
+  <div class="mt-10"  id="assigned-tasks">
     <h3 class="text-xl font-semibold text-gray-900">Assigned Tasks</h3>
     <div class="mt-6">
       <ul class="divide-y divide-gray-200">
@@ -57,7 +57,7 @@
   </div>
 
   <!-- Completed Tasks Section -->
-  <div *ngIf="hasCompletedTasks()" class="mt-10">
+  <div *ngIf="hasCompletedTasks()" class="mt-10"  id="completed-tasks">
     <h3 class="text-xl font-semibold text-gray-900">Completed Tasks</h3>
     <div class="mt-6">
       <ul class="divide-y divide-gray-200">

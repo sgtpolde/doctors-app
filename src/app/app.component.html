@@ -4,11 +4,18 @@
     <app-navbar></app-navbar>
   </header>
 
-  <!-- Main content with spacing for navbar and notification area -->
-  <main class="flex-grow pt-16 md:pt-20 px-4 sm:px-6 lg:px-8 overflow-y-auto pb-20">
+  <main class="flex-grow">
     <router-outlet></router-outlet>
   </main>
 
-  <!-- Notification component fixed at the bottom -->
-  <app-notification class="fixed bottom-4 w-full flex justify-center z-50"></app-notification>
+  <app-notification
+    class="fixed bottom-4 w-full flex justify-center z-50"
+  ></app-notification>
+
+  <!-- Footer -->
+  <footer class="bg-white shadow-md py-4 mt-auto">
+    <div class="container mx-auto text-center text-gray-700">
+      &copy; 2023 Doctors App. All rights reserved.
+    </div>
+  </footer>
 </div>
