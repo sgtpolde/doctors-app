@@ -15,14 +15,15 @@ describe('NotificationService', () => {
       notificationsLength = notifications.length;
     });
   
-    service.showError('Test error');
-    tick(0); // Process the addition
+    service.addNotification('Test error', 'error');
   
+    // Check that the notification was added
     expect(notificationsLength).toBe(1);
   
-    tick(6000); // Wait for the notification to auto-remove
+    // Wait for the notification to auto-remove (5 seconds in the service)
+    tick(5000);
   
+    // Check that the notification was removed
     expect(notificationsLength).toBe(0);
   }));
-  
 });

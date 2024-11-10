@@ -1,7 +1,6 @@
 <div class="container mx-auto mt-24 px-4">
   <div class="flex flex-col md:flex-row justify-between items-center mb-6">
     <h2 class="text-3xl font-bold text-gray-800">Tasks</h2>
-    <!-- Optionally, add a button to create a new task -->
     <div class="mt-4 md:mt-0">
       <a
         routerLink="/tasks/add"
@@ -14,7 +13,6 @@
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <!-- Plus icon -->
           <path
             stroke-linecap="round"
             stroke-linejoin="round"
@@ -27,38 +25,64 @@
     </div>
   </div>
 
+  <!-- Filter Controls -->
+  <div class="flex space-x-4 mb-6">
+    <button
+      (click)="setFilter('all')"
+      [class.font-bold]="filter === 'all'"
+      class="text-gray-800 hover:text-gray-600"
+    >
+      All
+    </button>
+    <button
+      (click)="setFilter('completed')"
+      [class.font-bold]="filter === 'completed'"
+      class="text-gray-800 hover:text-gray-600"
+    >
+      Completed
+    </button>
+    <button
+      (click)="setFilter('incomplete')"
+      [class.font-bold]="filter === 'incomplete'"
+      class="text-gray-800 hover:text-gray-600"
+    >
+      Incomplete
+    </button>
+  </div>
+
   <!-- Spinner -->
   <div *ngIf="isLoading" class="flex justify-center mt-8">
-    <div class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"></div>
+    <div
+      class="loader ease-linear rounded-full border-8 border-t-8 border-gray-200 h-16 w-16"
+    ></div>
   </div>
 
   <div *ngIf="!isLoading">
     <div class="bg-white shadow rounded-lg overflow-hidden">
       <ul class="divide-y divide-gray-200">
         <li
-          *ngFor="let task of tasks"
+          *ngFor="let task of filteredTasks"
           class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
         >
           <div class="flex items-center">
             <input
               type="checkbox"
               [checked]="task.completed"
+              (change)="toggleTaskCompletion(task)"
               class="h-4 w-4 text-primary focus:ring-primary-light border-gray-300 rounded"
             />
             <span
               [class.line-through]="task.completed"
               class="ml-3 text-sm text-gray-700"
+              >{{ task.title }}</span
             >
-              {{ task.title }}
-            </span>
           </div>
           <div class="flex space-x-4">
             <a
               [routerLink]="['/tasks/edit', task.id]"
               class="text-blue-600 hover:text-blue-900"
+              >Edit</a
             >
-              Edit
-            </a>
             <button
               (click)="deleteTask(task.id)"
               class="text-red-600 hover:text-red-900"
@@ -71,7 +95,10 @@
     </div>
 
     <!-- Empty State -->
-    <div *ngIf="!tasks.length && !errorMessage" class="text-center text-gray-500 mt-8">
+    <div
+      *ngIf="!filteredTasks.length && !errorMessage"
+      class="text-center text-gray-500 mt-8"
+    >
       No tasks found.
     </div>
 

@@ -10,7 +10,7 @@ describe('ErrorInterceptor', () => {
   let notificationServiceSpy: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
-    const notificationSpy = jasmine.createSpyObj('NotificationService', ['showError']);
+    const notificationSpy = jasmine.createSpyObj('NotificationService', ['addNotification']);
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
@@ -44,6 +44,6 @@ describe('ErrorInterceptor', () => {
     const req = httpMock.expectOne('/test');
     req.flush('Error', { status: 404, statusText: 'Not Found' });
 
-    expect(notificationServiceSpy.showError).toHaveBeenCalledWith('Resource not found.');
+    expect(notificationServiceSpy.addNotification).toHaveBeenCalledWith('Resource not found.',  'error');
   });
 });

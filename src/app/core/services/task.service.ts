@@ -47,6 +47,12 @@ export class TaskService {
       .pipe(catchError(this.handleError));
   }
 
+  toggleTaskCompletion(task: Task): Observable<Task> {
+    const updatedTask = { ...task, completed: !task.completed };
+    return this.updateTask(updatedTask);
+  }
+  
+
   private handleError(error: any) {
     // You can customize the error handling here
     console.error('An error occurred:', error);

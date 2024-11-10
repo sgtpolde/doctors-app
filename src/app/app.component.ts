@@ -8,7 +8,7 @@ import { NotificationComponent } from './shared/components/notification/notifica
   standalone: true,
   imports: [RouterOutlet, NavbarComponent, NotificationComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrl: './app.component.scss',
 })
 export class AppComponent {
   title = 'doctors-app';

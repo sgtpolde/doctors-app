@@ -13,8 +13,10 @@ import { RouterModule } from '@angular/router';
 })
 export class TaskListComponent implements OnInit {
   tasks: Task[] = [];
+  filteredTasks: Task[] = [];
   isLoading = true;
   errorMessage = '';
+  filter = 'all';
 
   constructor(private taskService: TaskService) {}
 
@@ -26,6 +28,7 @@ export class TaskListComponent implements OnInit {
     this.taskService.getTasks().subscribe({
       next: (data) => {
         this.tasks = data;
+        this.applyFilter();
         this.isLoading = false;
       },
       error: (error) => {
@@ -35,16 +38,31 @@ export class TaskListComponent implements OnInit {
     });
   }
 
+  
+  applyFilter(): void {
+    if (this.filter === 'completed') {
+      this.filteredTasks = this.tasks.filter((task) => task.completed);
+    } else if (this.filter === 'incomplete') {
+      this.filteredTasks = this.tasks.filter((task) => !task.completed);
+    } else {
+      this.filteredTasks = this.tasks;
+    }
+  }
+
+  setFilter(filter: string): void {
+    this.filter = filter;
+    this.applyFilter();
+  }
+
   toggleTaskCompletion(task: Task): void {
-    // Update the task's completion status
     task.completed = !task.completed;
-    // Optionally, send an update to the server
-    this.taskService.updateTask(task).subscribe({
-      next: () => {
-        // Success message or further actions
+    this.taskService.toggleTaskCompletion(task).subscribe({
+      next: (updatedTask) => {
+        // Optionally handle success feedback here, e.g., showing a success message
       },
       error: (error) => {
         this.errorMessage = error.message;
+        task.completed = !task.completed; // Revert change if the update fails
       },
     });
   }

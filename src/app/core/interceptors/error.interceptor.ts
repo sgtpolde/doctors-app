@@ -50,7 +50,7 @@ export class ErrorInterceptor implements HttpInterceptor {
         console.error('HTTP Error:', error);
 
         // Display the error using the notification service
-        this.notificationService.showError(errorMessage);
+        this.notificationService.addNotification(errorMessage, 'error');
 
         // Pass the error to the caller
         return throwError(() => new Error(errorMessage));
